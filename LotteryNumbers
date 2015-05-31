@@ -1,0 +1,74 @@
+<?php
+class LotteryNumbers {
+	
+	private $serie = array();
+	private $restrictedSerie = array();
+	
+	private $myNumbers = array();	
+	private $myStars = array();
+		
+	public function generateSerie($min, $max, $loops) {
+		
+		// as long as array $myNumbers not contains the amount of numbers continue operation
+		while(count( $this->serie ) < $loops ) {
+			
+			//generate a random number between $min and $max
+			$number = mt_rand($min, $max);
+			
+			// check if the generated $number is not already in $this->myNumbers or in the $restrictedNumbers array 
+			if( !in_array( $number, $this->serie ) && !in_array( $number, $this->restrictedSerie ) ) {
+				array_push($this->serie, $number);
+			}
+		}
+	}
+	
+	private function getSerie() {
+		return $this->serie;
+	}
+	
+	public function setSerie($min, $max, $loops, $restricted, $serieName) {
+		$this->serie = array();
+		$this->restrictedSerie = array();
+		$this->setRestrictedNumbers($restricted);
+		$this->generateSerie($min, $max, $loops);
+		switch ($serieName) {
+			case "myNumbers":
+				$this->myNumbers = $this->getSerie();
+				break;
+			case "myStars":
+				$this->myStars = $this->getSerie();
+				break;
+		}
+	}
+		
+	public function setRestrictedNumbers($restrictedNumbers) {
+		// if not an array dont go looping
+		if(!is_array($restrictedNumbers)) {
+			return;
+		}
+		foreach($restrictedNumbers as $number) {
+			array_push($this->restrictedSerie, (int)$number);
+		}	
+	}
+	
+	public function getMyNumbers() {
+		return $this->myNumbers;
+	}
+	
+	public function getMyStars() {
+		return $this->myStars;
+	}
+			
+}
+
+//USAGE
+//$lotteryTicket = new LotteryNumbers();
+
+//$min, $max, $loops, $restricted, $seriesName
+//$lotteryTicket->setSerie(1, 50, 5,  array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50), 'myNumbers' );
+	
+//$min, $max, $loops, $restricted, $seriesName
+//$lotteryTicket->setSerie(1, 11, 2,  array(4, 5), 'myStars' );
+	
+//var_dump($lotteryTicket->getMyNumbers());
+//var_dump($lotteryTicket->getMyStars());
